@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta charset = "utf-8">
+	  <title>Celsius to Fahrenheit Converter, Fahrenheit to Celsius converter </title>
+       <!-- Exam3P2
+       Author: Michael Mckee
+
+       Question 1:
+       Use JavaScript to implement a temperature converter program with some validation as
+       shown in the following screen shots. I have attached the HTML file that creates the form.
+       Here are the formulas:
+       C = 5.0 / 9.0 * ( F - 32 );
+       F = 9.0 / 5.0 * C + 32;
+       -->
+<script>
+	function validate() { // function to validate form and start conversion if correct inputs are received..
+	    var options = document.getElementsByName("conversion"); // assigns options variable to fah/cel selection
+        var temp = document.getElementById("temp").value; // assigns temp to user entry
+
+        // if user enters a blank value or not a number..
+        if (isNaN(document.getElementById("temp").value) || document.getElementById("temp").value == "") {
+            document.getElementById("output").style.color = "red"; // styles red
+            document.getElementById("output").innerHTML = "Wrong Input!"; // returns incorrect input value
+            return false;
+        }
+        else if (options[0].checked == true) { // if first radio button is checked (Convert to Fahrenheit)
+            convertFahrenheit(temp); // calls fahrenheit conversion function with user entry as argument
+        }
+        else if(options[1].checked == true){ // if second radio button is checked (Convert to Celsius)
+            convertCelsius(temp); // calls celsius conversion function with user entry as argument
+        }
+        else{ // if no option was selected..
+            document.getElementById("output").style.color = "red"; // styles red
+            document.getElementById("output").innerHTML = "You must select an option!"; // returns missing option output
+        }
+    }
+
+    function convertFahrenheit(n){ // function that converts celsius value to fahrenheit
+	    var toFah = parseFloat(9.0/5.0 * n + 32); // formula
+        document.getElementById("output").style.color = "green"; // styles green
+        document.getElementById("output").innerHTML = toFah.toFixed(2) + " Degrees Fahrenheit"; // returns conversion
+        return true;
+    }
+
+    function convertCelsius(n){ // function that converts fahrenheit value to celsius
+        var toCel = parseFloat(5.0/9.0 * (n - 32)); // formula
+        document.getElementById("output").style.color = "green"; // styles green
+        document.getElementById("output").innerHTML = toCel.toFixed(2) + " Degrees Celsius"; // returns conversion
+        return true;
+    }
+
+</script>
+</head>
+
+<body>
+<h3>Celsius/Fahrenheit Temperature Converter</h3>
+<form id="converter">
+    <table border="1">
+      <tr> 
+        <td>Enter Temperature</td>
+        <td> 
+          <input type="text" id="temp" size="6" />
+        </td>
+      </tr>
+      <tr> 
+        <td>Convert to Fahrenheit</td>
+        <td> 
+          <input type="radio" id="tofah" name ="conversion" />
+        </td>
+      </tr>
+      <tr> 
+        <td>Convert to Celsius</td>
+        <td> 
+            <input type="radio" id="tocel" name ="conversion" />
+        </td>
+      </tr>
+      <tr> 
+        <td> 
+            <input type="button" value="Convert" onclick="validate();" />
+        </td>
+		<td> <input type="reset" value="Reset" onclick="window.location.reload();"> </td>
+      </tr> 
+    </table>
+</form>
+<br>
+<div id="output"> 
+</div>
+</body>
+</html>

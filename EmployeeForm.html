@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<!-- Exam3P2
+Author: Michael Mckee
+
+Question 2:
+Produce the following HTML form. Write a JavaScript function to validate the user input for
+completeness according to the following criteria. Startup HTML file is given to you.
+1- Ensure that users fill out all form entries before submitting the form. All fields are
+required.
+2- Appropriate error messages must be shown in red color next to the corresponding box
+(i.e., use innerHTML, no alerts!)
+3- Number of days requested must be a numerical value between 1 and 15
+4- Use a regular expression to ensure that the user enters dates in this format:
+4/11/20 – 4/20/20. This part is tricky so make sure you read more about the
+subject and come up with a regular expression that makes sense!
+-->
+<html>
+<head>
+	<meta charset = "utf-8" />
+	<title>Employee Form</title>
+
+
+	<style type="text/css">
+
+		.button{width:275px;}
+
+		fieldset { border: 0px; }
+		.error{color:red; font-weight:bold;}
+
+	</style>
+	<script>
+		//start
+		function checkForm() { // function to validate form
+			var errors = 0; // init error count to 0
+			clearErrors(); // calls function to clear previous form error messages on initial call
+
+			// validates if emp name is blank..
+			if ((document.getElementById("empname").value == "")) {
+				document.getElementById("name_error").style.color = "red";
+				document.getElementById("name_error").innerHTML = "You must enter an Employee Name!"; // throws error
+				errors++; // adds to error count
+			}
+
+			// validates that days requested entry is a number and is between 1 and 15..
+			if (isNaN(document.getElementById("daysR").value) || (document.getElementById("daysR").value < 1 || document.getElementById("daysR").value > 15)) {
+				document.getElementById("days_error").style.color = "red";
+				document.getElementById("days_error").innerHTML = "You must enter a valid number of days requested! (1-15)";
+				errors++; // adds to error count
+			}
+
+			// regular expression stuff
+			var dates = document.getElementById("dates").value; // saves text entry to variable dates
+			var regex = new RegExp(/((0\d{1}|1[0-2])\/([0-2]\d{1}|3[0-1])\/\d{2})-((0\d{1}|1[0-2])\/([0-2]\d{1}|3[0-1])\/\d{2})/); // stores regex to variable
+			var result = regex.test(dates); // tests dates variable against regular expression
+
+			if (!result){ // if there is no match..
+				document.getElementById("dates_error").style.color = "red";
+				document.getElementById("dates_error").innerHTML = "You must enter dates of the format: MM/DD/YY-MM/DD/YY!";
+				errors++; // adds to error count
+			}
+
+			// validates manager field contains an entry
+			if (document.getElementById("manager").value == "") {
+				document.getElementById("manager_error").style.color = "red";
+				document.getElementById("manager_error").innerHTML = "You must enter your name!";
+				errors++; // adds to error count
+			}
+
+			// saves drop-down options as entries
+			var month = document.getElementById("month").value;
+			var day = document.getElementById("day").value;
+			var year = document.getElementById("year").value;
+
+			// validates drop downs do not have default values selected
+			if (month == "Month" || day == "day" || year == "year") {
+				document.getElementById("date_action_error").style.color = "red";
+				document.getElementById("date_action_error").innerHTML = "All date dropdown fields must be selected!";
+				errors++; // adds to error count
+			}
+
+			// so long as the error count variable has not been incremented.. execute stuff
+			if (errors == 0) {
+				var approvalCode = document.getElementsByName("approval");
+				if (approvalCode[0].checked == true) { // if Approved radio button is checked.. do this stuff..
+					document.getElementById("output").style.color = "green"; // styles green
+					document.getElementById("output").innerHTML = "<strong>PTO Approved. Thank you.</strong>";
+					return false;
+				}
+				else if (approvalCode[1].checked == true) { // if Denied radio button is checked.. do this stuff..
+					document.getElementById("output").style.color = "red"; // styles red
+					document.getElementById("output").innerHTML = "<strong>PTO Denied. Thank you.</strong>";
+					return false;
+				}
+				else { // if no radio button is checked.. complain!
+					document.getElementById("approval_error").style.color = "red"; // styles red
+					document.getElementById("approval_error").innerHTML = "You must approve/deny this request!";
+					return false;
+				}
+			}
+			else{
+				return false;
+			}
+		}
+
+		// function to clear errors upon form re-submission..
+		function clearErrors(){
+			document.getElementById("name_error").innerHTML = "";
+			document.getElementById("days_error").innerHTML = "";
+			document.getElementById("dates_error").innerHTML = "";
+			document.getElementById("manager_error").innerHTML = "";
+			document.getElementById("date_action_error").innerHTML = "";
+			document.getElementById("approval_error").innerHTML = "";
+			document.getElementById("output").innerHTML = "";
+		}
+
+	//end
+	</script>
+</head>
+
+
+<body>
+<h2>Employee Form</h2>
+
+<form id = "empform" onsubmit="return checkForm();">
+
+	<fieldset>
+		<table>
+			<tr>
+				<td>Employee Name</td>
+				<td><input type = "text" maxlength="256" size="30" id="empname" /></td>
+				<td> <div class="error" id = "name_error"> </div> </td>
+			</tr>
+			<tr>
+				<td>Number of Days Requested</td>
+				<td><input type = "text" maxlength="256" size="30" id="daysR" /></td>
+				<td> <div class="error" id = "days_error"> </div> </td>
+			</tr>
+			<tr>
+				<td>Dates(e.g., 04/11/20-04/20/20)</td>
+				<td><input type = "text" maxlength="256" size="30" id="dates" /></td>
+				<td> <div class="error" id = "dates_error"> </div> </td>
+			</tr>
+			<tr>
+				<td>Manager Name</td>
+				<td><input type = "text" maxlength="256" size="30" id="manager" /></td>
+				<td> <div class="error" id = "manager_error"> </div> </td>
+			</tr>
+			<tr>
+				<td><input type="radio" name="approval"  value="approved">Approved
+					<input type="radio" name="approval"  value="denied">Denied
+				</td>
+				<td> <div class="error" id = "approval_error"> </div> </td>
+			</tr>
+			<tr>
+				<td>
+					<select id ="month"><option selected ="selected" value="month">Month</option>
+						<option value="January">January </option>
+						<option value="February">February </option>
+						<option value="March">March</option>
+						<option value="April">April</option>
+						<option value="May">May </option>
+						<option value="June">June </option>
+						<option value="July">July</option>
+						<option value="August">August</option>
+						<option value="September">September</option>
+						<option value="October">October</option>
+						<option value="November">November</option>
+						<option value="December">December</option>
+					</select>
+
+					<select id ="day"><option selected ="selected" value="day">day</option>
+						<option value="1">1</option>
+						<option value="2">2</option>
+						<option value="3">3</option>
+						<option value="4">4</option>
+						<option value="5">5</option>
+						<option value="6">6</option>
+						<option value="7">7</option>
+						<option value="8">8</option>
+						<option value="9">9</option>
+						<option value="10">10</option>
+						<option value="11">11</option>
+						<option value="12">12</option>
+						<option value="13">13</option>
+						<option value="14">14</option>
+						<option value="15">15</option>
+						<option value="16">16</option>
+						<option value="17">17</option>
+						<option value="18">18</option>
+						<option value="19">19</option>
+						<option value="20">20</option>
+						<option value="21">21</option>
+						<option value="22">22</option>
+						<option value="23">23</option>
+						<option value="24">24</option>
+						<option value="25">25</option>
+						<option value="26">26</option>
+						<option value="27">27</option>
+						<option value="28">28</option>
+						<option value="29">29</option>
+						<option value="30">30</option>
+						<option value="31">31</option>
+					</select>
+
+					<select id ="year"><option selected ="selected" value="year">year</option>
+						<option value="2017">2017</option>
+						<option value="2018">2018</option>
+						<option value="2019">2019</option>
+						<option value="2020">2030</option>
+						<option value="2021">2021</option>
+					</select>
+				</td>
+				<td> <div class="error" id = "date_action_error"> </div> </td>
+
+			</tr>
+
+		</table>
+
+	</fieldset>
+
+	<input type = "submit" class = "button" value = "Notify Employee of Approval/Denial" />
+
+</form>
+<div id="output">
+
+</body>
+
+</html>
